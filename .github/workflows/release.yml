@@ -26,12 +26,18 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: |
+          keytool -genkeypair -v \
+            -keystore "$HOME/.android/debug.keystore" \
+            -storepass android -alias androiddebugkey -keypass android \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US" || true
+          ./gradlew assembleRelease
 
       - name: Rename APK with version
         run: |
           mkdir -p dist
-          cp app/build/outputs/apk/release/app-release-unsigned.apk "dist/InventoryManager-${GITHUB_REF_NAME}.apk"
+          cp app/build/outputs/apk/release/app-release.apk "dist/InventoryManager-${GITHUB_REF_NAME}.apk"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
