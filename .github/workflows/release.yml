@@ -30,6 +30,7 @@ jobs:
 
       - name: Build Release APK
         run: |
+          mkdir -p "$HOME/.android"
           keytool -genkeypair -v \
             -keystore "$HOME/.android/debug.keystore" \
             -storepass android -alias androiddebugkey -keypass android \
